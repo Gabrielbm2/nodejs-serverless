@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { resizeImage } from "../services/image-processor.service";
+import { ImageProcessor } from "../services/image-processor.service";
 import { uploadToS3 } from "../utils/s3";
 import { create as createFile } from "../services/files.service";
 import { CreateFileDto } from "../interfaces/create-file.dto";
@@ -8,9 +8,10 @@ export async function processImageHandler(
   req: Request,
   res: Response
 ): Promise<void> {
+    console.log("🔥 Requisição recebida em /image-upload/upload");
+
   const file = req.file;
-  const { targetResolution, customWidth, customHeight, keepAspectRatio } =
-    req.body;
+  const { targetResolution, customWidth, customHeight, keepAspectRatio } = req.body;
 
   if (!file || !targetResolution) {
     res.status(400).json({ error: "File and targetResolution are required" });
@@ -24,7 +25,7 @@ export async function processImageHandler(
     keepAspectRatio === "true" || keepAspectRatio === true;
 
   try {
-    const processedBuffer = await resizeImage(
+    const processedBuffer = await ImageProcessor.resizeImage(
       file.buffer,
       width,
       height,

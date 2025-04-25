@@ -1,11 +1,21 @@
+# Node
 node_modules/
+dist/
+*.log
 .env
 
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Docker
+pgdata/
+docker-entrypoint.sh
 
+# Editor/IDE
 .vscode/
-.idea/
+*.swp
+.DS_Store
 
-.sst/
+# ts-node + nodemon
+*.tsbuildinfo
+
+# MacOS/Windows
+Thumbs.db
+ehthumbs.db

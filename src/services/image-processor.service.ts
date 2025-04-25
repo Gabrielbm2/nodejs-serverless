@@ -1,63 +1,74 @@
 import sharp from "sharp";
+import { AspectRatioService } from "./aspect-ratio.service";
 
-export async function resizeImage(
-  buffer: Buffer,
-  width: number,
-  height: number,
-  mimeType: string,
-  keepAspectRatio: boolean
-): Promise<Buffer> {
-  const metadata = await sharp(buffer).metadata();
+export class ImageProcessor {
+  static async resizeImage(
+    buffer: Buffer,
+    width: number,
+    height: number,
+    mimeType: string,
+    keepAspectRatio: boolean
+  ): Promise<Buffer> {
 
-  const originalWidth = metadata.width!;
-  const originalHeight = metadata.height!;
-  const originalAspectRatio = originalWidth / originalHeight;
-  const targetAspectRatio = width / height;
-  const ratioDifference = Math.abs(originalAspectRatio - targetAspectRatio);
+    await AspectRatioService.validate(buffer, width, height, keepAspectRatio);
 
-  const maxAllowedDifference = 0.2;
+    const resized = await this.resizeAndEnhance(buffer, width, height, keepAspectRatio);
+    const finalBuffer = await this.convertToFinalFormat(resized, mimeType);
 
-  if (keepAspectRatio && ratioDifference > maxAllowedDifference) {
-    throw new Error(
-      "As dimensões informadas distorcem o formato original da imagem. Para continuar, desative a opção de manter proporção."
-    );
+    return finalBuffer;
   }
 
-  const resizeOptions: sharp.ResizeOptions = {
-    fit: keepAspectRatio
-      ? originalAspectRatio > targetAspectRatio
-        ? "cover"
-        : "contain"
-      : "fill",
-    width,
-    height,
-    withoutEnlargement: false,
-    background: { r: 255, g: 255, b: 255, alpha: 0 },
-    kernel: sharp.kernel.lanczos3,
-  };
+  private static async resizeAndEnhance(
+    buffer: Buffer,
+    width: number,
+    height: number,
+    keepAspectRatio: boolean
+  ): Promise<Buffer> {
+    const resizeOptions: sharp.ResizeOptions = {
+      fit: keepAspectRatio ? "inside" : "fill",
+      width,
+      height,
+      withoutEnlargement: false,
+      background: { r: 255, g: 255, b: 255, alpha: 0 },
+      kernel: sharp.kernel.lanczos3,
+    };
 
-  let processedBuffer = await sharp(buffer)
-    .resize(resizeOptions)
-    .modulate({ brightness: 1.05, saturation: 1.1 })
-    .sharpen({ sigma: 1.5, m1: 0.7, m2: 0.7 })
-    .toBuffer();
+    return await sharp(buffer)
+      .resize(resizeOptions)
+      .modulate({ brightness: 1.05, saturation: 1.1 })
+      .sharpen({ sigma: 1.5, m1: 0.7, m2: 0.7 })
+      .toBuffer();
+  }
 
-  const lowerMime = mimeType.toLowerCase();
+  private static async convertToFinalFormat(
+    buffer: Buffer,
+    mimeType: string
+  ): Promise<Buffer> {
+    const lowerMime = mimeType.toLowerCase();
 
-  if (lowerMime.includes("png")) {
-    processedBuffer = await sharp(processedBuffer)
-      .png({
-        quality: 95,
-        compressionLevel: 9,
-        adaptiveFiltering: true,
-        palette: true,
+    if (lowerMime.includes("png")) {
+      return sharp(buffer)
+        .png({
+          quality: 95,
+          compressionLevel: 9,
+          adaptiveFiltering: true,
+          palette: true,
+        })
+        .toBuffer();
+    }
+
+    if (lowerMime.includes("webp")) {
+      return sharp(buffer)
+        .webp({ quality: 95 })
+        .toBuffer();
+    }
+
+    return sharp(buffer)
+      .jpeg({
+        quality: 98,
+        chromaSubsampling: "4:4:4",
+        progressive: true,
       })
       .toBuffer();
-  } else if (lowerMime.includes("webp")) {
-    processedBuffer = await sharp(processedBuffer)
-      .webp({ quality: 95 })
-      .toBuffer();
   }
-
-  return processedBuffer;
 }
