@@ -1,15 +1,13 @@
 import express from "express";
-import { uploadMiddleware } from "./utils/upload";
+import serverlessExpress from "@vendia/serverless-express";
+import routes from "./routes";
 import { config } from "dotenv";
-import { processImageHandler } from "./controllers/image-upload.controller";
+
 config();
 
 const app = express();
 
-app.post("/image-upload/upload", uploadMiddleware, processImageHandler);
+app.use(express.json());
+app.use(routes);
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log(
-    `Image upload server running on port ${process.env.PORT || 3000}`
-  );
-});
+export const handler = serverlessExpress({ app });

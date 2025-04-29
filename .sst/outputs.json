@@ -1,0 +1,7 @@
+{
+  "serverless-upload-images-nodejs-serverless-api-MyStack": {
+    "TableName": "serverless-upload-images-nodejs-serverless-api-Files",
+    "ApiUrl": "https://fz69crl2wl.execute-api.us-west-2.amazonaws.com",
+    "BucketName": "serverless-upload-images-nod-uploadsbucket6e76b673-tynezwewnnee"
+  }
+}

@@ -6,7 +6,7 @@ import {
 import { env } from "../config/env";
 
 const s3 = new S3Client({
-  region: "us-east-1",
+  region: "us-west-2",
   credentials: {
     accessKeyId: env.aws.accessKeyId,
     secretAccessKey: env.aws.secretAccessKey,

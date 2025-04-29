@@ -19,3 +19,5 @@ docker-entrypoint.sh
 # MacOS/Windows
 Thumbs.db
 ehthumbs.db
+
+.sst/

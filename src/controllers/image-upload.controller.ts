@@ -4,11 +4,8 @@ import { uploadToS3 } from "../utils/s3";
 import { create as createFile } from "../services/files.service";
 import { CreateFileDto } from "../interfaces/create-file.dto";
 
-export async function processImageHandler(
-  req: Request,
-  res: Response
-): Promise<void> {
-    console.log("🔥 Requisição recebida em /image-upload/upload");
+export async function processImageHandler(req: Request, res: Response): Promise<void> {
+  console.log("🔥 Requisição recebida em /image-upload/upload");
 
   const file = req.file;
   const { targetResolution, customWidth, customHeight, keepAspectRatio } = req.body;
@@ -20,9 +17,7 @@ export async function processImageHandler(
 
   const width = parseInt(customWidth) || 300;
   const height = parseInt(customHeight) || 300;
-
-  const shouldKeepAspectRatio =
-    keepAspectRatio === "true" || keepAspectRatio === true;
+  const shouldKeepAspectRatio = keepAspectRatio === "true" || keepAspectRatio === true;
 
   try {
     const processedBuffer = await ImageProcessor.resizeImage(
@@ -50,11 +45,8 @@ export async function processImageHandler(
     res.status(201).json(saved);
   } catch (error: any) {
     console.error("Erro completo no processImageHandler:", error);
-    const errorMessage =
-      error?.message || "Erro desconhecido ao processar imagem";
-    const statusCode = errorMessage.includes("distorcem o formato original")
-      ? 400
-      : 500;
+    const errorMessage = error?.message || "Erro desconhecido ao processar imagem";
+    const statusCode = errorMessage.includes("distorcem o formato original") ? 400 : 500;
 
     res.status(statusCode).json({
       error: "Erro ao processar imagem",

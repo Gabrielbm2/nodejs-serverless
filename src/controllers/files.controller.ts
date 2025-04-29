@@ -1,55 +1,36 @@
-import { IncomingMessage, ServerResponse } from "http";
+import { Request, Response } from "express";
 import * as filesService from "../services/files.service";
-import { getRequestBody } from "../utils/http";
 
-export async function create(req: IncomingMessage, res: ServerResponse) {
-  const body = await getRequestBody(req);
-  const result = await filesService.create(body);
-  res.writeHead(201, { "Content-Type": "application/json" });
-  res.end(JSON.stringify(result));
+export async function create(req: Request, res: Response) {
+  const result = await filesService.create(req.body);
+  res.status(201).json(result);
 }
 
-export async function list(_req: IncomingMessage, res: ServerResponse) {
+export async function list(_req: Request, res: Response) {
   const result = await filesService.list();
-  res.writeHead(200, { "Content-Type": "application/json" });
-  res.end(JSON.stringify(result));
+  res.status(200).json(result);
 }
 
-export async function findAll(req: IncomingMessage, res: ServerResponse) {
-  const url = new URL(req.url || "", `http://${req.headers.host}`);
-  const params = Object.fromEntries(url.searchParams.entries());
+export async function findAll(req: Request, res: Response) {
+  const params = req.query;
   const result = await filesService.findAll(params);
-  res.writeHead(200, { "Content-Type": "application/json" });
-  res.end(JSON.stringify(result));
+  res.status(200).json(result);
 }
 
-export async function findOne(
-  _req: IncomingMessage,
-  res: ServerResponse,
-  id: string
-) {
+export async function findOne(req: Request, res: Response) {
+  const id = req.params.id;
   const result = await filesService.findOne(id);
-  res.writeHead(200, { "Content-Type": "application/json" });
-  res.end(JSON.stringify(result));
+  res.status(200).json(result);
 }
 
-export async function update(
-  req: IncomingMessage,
-  res: ServerResponse,
-  id: string
-) {
-  const body = await getRequestBody(req);
-  const result = await filesService.update(id, body);
-  res.writeHead(200, { "Content-Type": "application/json" });
-  res.end(JSON.stringify(result));
+export async function update(req: Request, res: Response) {
+  const id = req.params.id;
+  const result = await filesService.update(id, req.body);
+  res.status(200).json(result);
 }
 
-export async function remove(
-  _req: IncomingMessage,
-  res: ServerResponse,
-  id: string
-) {
+export async function remove(req: Request, res: Response) {
+  const id = req.params.id;
   const result = await filesService.remove(id);
-  res.writeHead(200, { "Content-Type": "application/json" });
-  res.end(JSON.stringify(result));
+  res.status(200).json(result);
 }
