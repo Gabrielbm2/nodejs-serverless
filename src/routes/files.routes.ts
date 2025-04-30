@@ -16,9 +16,8 @@ router.delete("/files/:id", (req, res) =>
   filesController.remove(req, res)
 );
 
-// rota de teste simples
 router.get("/teste", (req, res) => {
-  res.send("testando novamente");
+  res.send("nivardo");
 });
 
 export default router;
