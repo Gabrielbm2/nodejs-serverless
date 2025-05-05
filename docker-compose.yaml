@@ -8,8 +8,8 @@ services:
     ports:
       - "4000:4000"
     volumes:
-      - .:/app            # Sincroniza seu código local com o container
-      - /app/node_modules # Evita sobrescrever os node_modules locais
+      - .:/app            
+      - /app/node_modules 
     depends_on:
       - db
     environment:
