@@ -23,8 +23,8 @@ Allow image resizing with:
 
 In addition, the resizing process also applies **automatic visual enhancements**:
 
-- Increased brightness
-- Enhanced saturation
+- Increased brightness  
+- Enhanced saturation  
 - Sharpened edges
 
 This ensures optimized images with a professional look, even after resizing.
@@ -43,8 +43,8 @@ Although there are public solutions (such as Lambdas using ImageMagick or pre-bu
 
 ## 🧠 Key Learnings
 
-- Cold start optimization and response time tuning
-- Efficient metadata storage using DynamoDB
+- Cold start optimization and response time tuning  
+- Efficient metadata storage using DynamoDB  
 - Modular organization with SST for clean and scalable deployments
 
 ---
@@ -53,20 +53,22 @@ Although there are public solutions (such as Lambdas using ImageMagick or pre-bu
 
 This Lambda function can be reused or adapted for:
 
-- CMSs and publishing systems
-- E-commerce platforms needing product image resizing
-- AI pipelines that require optimized images
+- CMSs and publishing systems  
+- E-commerce platforms needing product image resizing  
+- AI pipelines that require optimized images  
 - Any app that needs to generate thumbnails on demand
 
 ---
 
-## 🧑‍💻 Source Code
+## ▶️ Running Locally
 
-This project is **open source**!  
-🔗 [Check out the repository](https://github.com/Gabrielbm2/nodejs-serverless)
+To start the application locally:
 
----
+```bash
+docker-compose up
+```
+To run tests
 
-## 🪪 License
-
-Distributed under the MIT License. See the [LICENSE](LICENSE) file for details.
+```bash
+npm test
+```
